@@ -1,5 +1,6 @@
 const UI = require('ui');
 const Voice = require('ui/voice');
+const Feature = require('platform/feature');
 
 var a = 0;
 var operation = '';
@@ -14,15 +15,17 @@ const operations = {
 }
 
 var main = new UI.Card({
-  fullscreen: true,
+  status: false,
   title: '   Voice Calc',
-  subtitle: 'Say the expression',
-  body: 'by pressing on "select".'
+  subtitle: Feature.microphone('Say the expression', 'No mic'),
+  body: Feature.microphone('by pressing on "select".', 'This app requires a microphone.'),
 });
 
 main.show();
 
 main.on('click', 'select', function(e) {
+  if (!Feature.microphone())
+    return console.log('No microphone');
   Voice.dictate('start', false, function(e) {
     if (e.err) {
         console.log('Error: ' + e.err);
